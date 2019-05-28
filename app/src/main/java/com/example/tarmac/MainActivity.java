@@ -4,20 +4,10 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 import android.widget.ViewSwitcher;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 	private String[] titles = {
@@ -63,25 +53,33 @@ public class MainActivity extends AppCompatActivity {
 			R.drawable.w11,
 			R.drawable.w12
 	};
-	TextSwitcher ts;
+	ViewFlipper vf;
 	int curText = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		ts = (TextSwitcher)findViewById(R.id.ts);
-		ts.setFactory(new ViewSwitcher.ViewFactory() {
-			@Override
-			public View makeView() {
-				TextView tv = new TextView(MainActivity.this);
-				tv.setTextSize(40);
-				tv.setTextColor(Color.MAGENTA);
-				return tv;
-			}
-		});
-		next(null);
+		vf = (ViewFlipper) findViewById(R.id.vf);
 	}
-	public void next(View source){
-		ts.setText(descs[curText++%descs.length]);
+
+	public void prev(View v) {
+		vf.setInAnimation(this, android.R.anim.fade_in);
+		vf.setOutAnimation(this, android.R.anim.fade_out);
+		vf.showPrevious();
+		vf.stopFlipping();
+	}
+
+	public void next(View v) {
+		vf.setInAnimation(this, android.R.anim.fade_in);
+		vf.setOutAnimation(this, android.R.anim.fade_out);
+		vf.showNext();
+		vf.stopFlipping();
+	}
+
+	public void auto(View v) {
+		vf.setInAnimation(this, android.R.anim.fade_in);
+		vf.setOutAnimation(this, android.R.anim.fade_out);
+		vf.startFlipping();
 	}
 }
