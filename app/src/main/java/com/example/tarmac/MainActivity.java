@@ -1,5 +1,6 @@
 package com.example.tarmac;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.GridView;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
@@ -60,36 +63,25 @@ public class MainActivity extends AppCompatActivity {
 			R.drawable.w11,
 			R.drawable.w12
 	};
-	GridView gv;
-	ImageSwitcher is;
+	TextSwitcher ts;
+	int curText = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		List<Map<String,Object>> listItems = new ArrayList<Map<String,Object>>();
-		for (int i = 0; i < imgs.length; i++) {
-			Map<String,Object> item = new HashMap<String, Object>();
-			item.put("image", imgs[i]);
-			listItems.add(item);
-		}
-		SimpleAdapter simpleAdapter = new SimpleAdapter(this, listItems, R.layout.array_layout,new String[]{"image"},new int[]{R.id.iv});
-		gv = (GridView)findViewById(R.id.gv);
-		gv.setAdapter(simpleAdapter);
-		is = (ImageSwitcher)findViewById(R.id.switcher);
-		is.setFactory(new ViewSwitcher.ViewFactory() {
+		ts = (TextSwitcher)findViewById(R.id.ts);
+		ts.setFactory(new ViewSwitcher.ViewFactory() {
 			@Override
 			public View makeView() {
-				ImageView imageView = new ImageView(MainActivity.this);
-				imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-				imageView.setLayoutParams(new ImageSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-				return imageView;
+				TextView tv = new TextView(MainActivity.this);
+				tv.setTextSize(40);
+				tv.setTextColor(Color.MAGENTA);
+				return tv;
 			}
 		});
-		gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				is.setImageResource(imgs[position]);
-			}
-		});
+		next(null);
+	}
+	public void next(View source){
+		ts.setText(descs[curText++%descs.length]);
 	}
 }

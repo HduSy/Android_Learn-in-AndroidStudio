@@ -3,21 +3,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <GridView
-        android:id="@+id/gv"
+    <TextSwitcher
+        android:id="@+id/ts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numColumns="4"
-        android:horizontalSpacing="2dp"
-        android:verticalSpacing="2dp"
-        android:gravity="center">
-    </GridView>
-    <ImageSwitcher
-        android:id="@+id/switcher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:inAnimation="@android:anim/fade_in"
-        android:outAnimation="@android:anim/fade_out">
-    </ImageSwitcher>
+        android:inAnimation="@android:anim/slide_in_left"
+        android:outAnimation="@android:anim/slide_out_right"
+        android:onClick="next"
+        >
+    </TextSwitcher>
 </LinearLayout>
