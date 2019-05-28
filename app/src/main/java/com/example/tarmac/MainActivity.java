@@ -1,19 +1,13 @@
 package com.example.tarmac;
 
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextSwitcher;
-import android.widget.TextView;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
-import android.widget.ViewSwitcher;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 	private String[] titles = {
@@ -60,16 +54,39 @@ public class MainActivity extends AppCompatActivity {
 			R.drawable.w12
 	};
 	CalendarView cv;
+	private int year, month, day, hour, minute;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		cv = (CalendarView)findViewById(R.id.cv);
-		cv.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+		DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
+		TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker);
+		Calendar c = Calendar.getInstance();
+		year = c.get(Calendar.YEAR);
+		month = c.get(Calendar.MONTH);
+		day = c.get(Calendar.DAY_OF_MONTH);
+		hour = c.get(Calendar.HOUR);
+		minute = c.get(Calendar.MINUTE);
+		datePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
 			@Override
-			public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-				Toast.makeText(MainActivity.this, "生日"+year+"年"+month+"月"+dayOfMonth+"日", Toast.LENGTH_SHORT).show();
+			public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+				MainActivity.this.year = year;
+				MainActivity.this.month = monthOfYear;
+				MainActivity.this.day = dayOfMonth;
+				showDate(year, month, day, hour, minute);
 			}
 		});
+		timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+			@Override
+			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+				MainActivity.this.hour = hourOfDay;
+				MainActivity.this.minute = minute;
+			}
+		});
+	}
+
+	private void showDate(int year, int month, int day, int hour, int minute) {
+		Toast.makeText(MainActivity.this, year + "/" + month + "/" + day + " " + hour + ":" + minute, Toast.LENGTH_SHORT).show();
 	}
 }
