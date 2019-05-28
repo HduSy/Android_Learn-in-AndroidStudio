@@ -2,12 +2,18 @@ package com.example.tarmac;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
+import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 	private String[] titles = {
@@ -53,40 +59,37 @@ public class MainActivity extends AppCompatActivity {
 			R.drawable.w11,
 			R.drawable.w12
 	};
-	CalendarView cv;
-	private int year, month, day, hour, minute;
+	private SearchView sv;
+	private ListView lv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
-		TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker);
-		Calendar c = Calendar.getInstance();
-		year = c.get(Calendar.YEAR);
-		month = c.get(Calendar.MONTH);
-		day = c.get(Calendar.DAY_OF_MONTH);
-		hour = c.get(Calendar.HOUR);
-		minute = c.get(Calendar.MINUTE);
-		datePicker.init(year, month, day, new DatePicker.OnDateChangedListener() {
-			@Override
-			public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-				MainActivity.this.year = year;
-				MainActivity.this.month = monthOfYear;
-				MainActivity.this.day = dayOfMonth;
-				showDate(year, month, day, hour, minute);
-			}
-		});
-		timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-			@Override
-			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-				MainActivity.this.hour = hourOfDay;
-				MainActivity.this.minute = minute;
-			}
-		});
-	}
+		lv = (ListView) findViewById(R.id.lv);
+		lv.setAdapter(new ArrayAdapter<String>(this, R.layout.array_layout, descs));
+		lv.setTextFilterEnabled(true);
 
-	private void showDate(int year, int month, int day, int hour, int minute) {
-		Toast.makeText(MainActivity.this, year + "/" + month + "/" + day + " " + hour + ":" + minute, Toast.LENGTH_SHORT).show();
+		sv = (SearchView) findViewById(R.id.sv);
+		sv.setIconifiedByDefault(true);
+		sv.setSubmitButtonEnabled(true);
+		sv.setQueryHint("查找");
+		sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				Toast.makeText(MainActivity.this, "您的选择是" + query, Toast.LENGTH_SHORT).show();
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				if (TextUtils.isEmpty(newText)) {
+					lv.clearTextFilter();
+				} else {
+					lv.setFilterText(newText);
+				}
+				return true;
+			}
+		});
 	}
 }
