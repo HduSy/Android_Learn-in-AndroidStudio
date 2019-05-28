@@ -3,9 +3,15 @@ package com.example.tarmac;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 import android.widget.ViewSwitcher;
 
@@ -53,33 +59,17 @@ public class MainActivity extends AppCompatActivity {
 			R.drawable.w11,
 			R.drawable.w12
 	};
-	ViewFlipper vf;
-	int curText = 0;
-
+	CalendarView cv;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		vf = (ViewFlipper) findViewById(R.id.vf);
-	}
-
-	public void prev(View v) {
-		vf.setInAnimation(this, android.R.anim.fade_in);
-		vf.setOutAnimation(this, android.R.anim.fade_out);
-		vf.showPrevious();
-		vf.stopFlipping();
-	}
-
-	public void next(View v) {
-		vf.setInAnimation(this, android.R.anim.fade_in);
-		vf.setOutAnimation(this, android.R.anim.fade_out);
-		vf.showNext();
-		vf.stopFlipping();
-	}
-
-	public void auto(View v) {
-		vf.setInAnimation(this, android.R.anim.fade_in);
-		vf.setOutAnimation(this, android.R.anim.fade_out);
-		vf.startFlipping();
+		cv = (CalendarView)findViewById(R.id.cv);
+		cv.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+			@Override
+			public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+				Toast.makeText(MainActivity.this, "生日"+year+"年"+month+"月"+dayOfMonth+"日", Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 }
