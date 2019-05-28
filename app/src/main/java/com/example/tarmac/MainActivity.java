@@ -4,9 +4,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterViewFlipper;
-import android.widget.BaseAdapter;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
+import android.widget.ViewSwitcher;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 	private String[] titles = {
@@ -52,50 +60,36 @@ public class MainActivity extends AppCompatActivity {
 			R.drawable.w11,
 			R.drawable.w12
 	};
-	AdapterViewFlipper flipper;
+	GridView gv;
+	ImageSwitcher is;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		flipper = (AdapterViewFlipper)findViewById(R.id.af);
-		BaseAdapter baseAdapter = new BaseAdapter() {
+		List<Map<String,Object>> listItems = new ArrayList<Map<String,Object>>();
+		for (int i = 0; i < imgs.length; i++) {
+			Map<String,Object> item = new HashMap<String, Object>();
+			item.put("image", imgs[i]);
+			listItems.add(item);
+		}
+		SimpleAdapter simpleAdapter = new SimpleAdapter(this, listItems, R.layout.array_layout,new String[]{"image"},new int[]{R.id.iv});
+		gv = (GridView)findViewById(R.id.gv);
+		gv.setAdapter(simpleAdapter);
+		is = (ImageSwitcher)findViewById(R.id.switcher);
+		is.setFactory(new ViewSwitcher.ViewFactory() {
 			@Override
-			public int getCount() {
-				return imgs.length;
-			}
-
-			@Override
-			public Object getItem(int position) {
-				return imgs[position];
-			}
-
-			@Override
-			public long getItemId(int position) {
-				return position;
-			}
-
-			@Override
-			public View getView(int position, View convertView, ViewGroup parent) {
+			public View makeView() {
 				ImageView imageView = new ImageView(MainActivity.this);
-				imageView.setImageResource(imgs[position]);
-				imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-				imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+				imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+				imageView.setLayoutParams(new ImageSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 				return imageView;
 			}
-		};
-		flipper.setAdapter(baseAdapter);
-	}
-	public void prev(View view) {
-		flipper.showPrevious();
-		flipper.stopFlipping();
-	}
-
-	public void next(View view) {
-		flipper.showNext();
-		flipper.stopFlipping();
-	}
-
-	public void auto(View view) {
-		flipper.startFlipping();
+		});
+		gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				is.setImageResource(imgs[position]);
+			}
+		});
 	}
 }
