@@ -1,19 +1,21 @@
 package com.example.tarmac;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.widget.ArrayAdapter;
-import android.widget.CalendarView;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 	private String[] titles = {
@@ -59,37 +61,42 @@ public class MainActivity extends AppCompatActivity {
 			R.drawable.w11,
 			R.drawable.w12
 	};
-	private SearchView sv;
-	private ListView lv;
+	private String books[] = {
+			"《Java疯狂讲义》",
+			"《Android疯狂讲义》",
+			"《C++ Primer plus》"
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		lv = (ListView) findViewById(R.id.lv);
-		lv.setAdapter(new ArrayAdapter<String>(this, R.layout.array_layout, descs));
-		lv.setTextFilterEnabled(true);
-
-		sv = (SearchView) findViewById(R.id.sv);
-		sv.setIconifiedByDefault(true);
-		sv.setSubmitButtonEnabled(true);
-		sv.setQueryHint("查找");
-		sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+		Button dateDialog = (Button)findViewById(R.id.dateDialog);
+		Button timeDialog = (Button)findViewById(R.id.timeDialog);
+		dateDialog.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public boolean onQueryTextSubmit(String query) {
-				Toast.makeText(MainActivity.this, "您的选择是" + query, Toast.LENGTH_SHORT).show();
-				return false;
+			public void onClick(View v) {
+				Calendar c = Calendar.getInstance();
+				new DatePickerDialog(MainActivity.this,new DatePickerDialog.OnDateSetListener(){
+					@Override
+					public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+						Toast.makeText(MainActivity.this, "您选择了"+year+"年"+month+"月"+dayOfMonth+"日", Toast.LENGTH_SHORT).show();
+					}
+				},c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH)).show();
 			}
-
+		});
+		timeDialog.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public boolean onQueryTextChange(String newText) {
-				if (TextUtils.isEmpty(newText)) {
-					lv.clearTextFilter();
-				} else {
-					lv.setFilterText(newText);
-				}
-				return true;
+			public void onClick(View v) {
+				Calendar c = Calendar.getInstance();
+				new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+					@Override
+					public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+						Toast.makeText(MainActivity.this, "您选择了"+hourOfDay+"时"+minute+"分",Toast.LENGTH_SHORT ).show();
+					}
+				},c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE),true).show();
 			}
 		});
 	}
+
 }
